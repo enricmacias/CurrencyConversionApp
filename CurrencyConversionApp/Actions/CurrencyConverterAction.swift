@@ -28,7 +28,12 @@ final class CurrencyConverterAction: CurrencyConverterActionType {
     }
     
     func fetchRates() {
-        // TODO: fetchRates
+        CurrencyLayerAPI.requestRates()
+            .subscribe(onNext: { [weak self] rates in
+                guard let me = self else { return }
+                me.dispatcher.usdRates.dispatch(rates)
+            })
+            .disposed(by: disposeBag)
     }
     
     func convert(_ amount: Float, from fromCurrency: String, to toCurrency: String) {

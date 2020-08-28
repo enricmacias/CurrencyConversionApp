@@ -19,18 +19,18 @@ public final class CurrencyLayerAPI {
             }
     }
 
-    public static func requestRates() -> Observable<[String: AnyObject]> {
+    public static func requestRates() -> Observable<[String: Double]> {
         let parameters = ["access_key": Const.accessKey]
         return RxAlamofire.requestJSON(.get,
                                        Const.ratesRequest,
                                        parameters: parameters)
-            .flatMap { _, json -> Observable<[String: AnyObject]> in
+            .flatMap { _, json -> Observable<[String: Double]> in
                 guard let dict = json as? [String: AnyObject],
-                    let currencies = dict["quotes"] as? [String: AnyObject] else {
+                    let rates = dict["quotes"] as? [String: Double] else {
                         // TODO: Create an error class, and handle errors more proeprly
                         return .error(NSError(domain:"", code:0, userInfo:nil))
                 }
-                return .just(currencies)
+                return .just(rates)
             }
     }
     

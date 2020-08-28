@@ -3,6 +3,6 @@ final class CurrencyConverterDispatcher {
     static let shared = CurrencyConverterDispatcher()
 
     let currencies = DispatchSubject<[Currency]>()
-    let usdRates = DispatchSubject<[String: Float]>()
+    let usdRates = DispatchSubject<[String: Double]>()
 
 }
