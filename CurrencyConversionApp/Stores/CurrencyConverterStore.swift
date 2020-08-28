@@ -1,9 +1,9 @@
 import RxSwift
 import RxCocoa
 
-final class CurrencyCoverterStore {
+final class CurrencyConverterStore {
     
-    static let shared = CurrencyCoverterStore()
+    static let shared = CurrencyConverterStore()
     
     let currencies: Observable<[Currency]>
     private let _currencies = BehaviorRelay<[Currency]>.init(value: [])

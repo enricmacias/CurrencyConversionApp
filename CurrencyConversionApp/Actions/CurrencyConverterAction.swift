@@ -10,12 +10,12 @@ final class CurrencyConverterAction: CurrencyConverterActionType {
     static let shared = CurrencyConverterAction()
     
     private let dispatcher: CurrencyConverterDispatcher
-    private let store: CurrencyCoverterStore
+    private let store: CurrencyConverterStore
     
     fileprivate let disposeBag = DisposeBag()
     
     init(dispatcher: CurrencyConverterDispatcher = .shared,
-         store: CurrencyCoverterStore = .shared) {
+         store: CurrencyConverterStore = .shared) {
         self.dispatcher = dispatcher
         self.store = store
     }
