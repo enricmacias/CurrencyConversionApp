@@ -3,4 +3,6 @@ platform :ios, '13.0'
 
 target 'CurrencyConversionApp' do
   pod 'RxAlamofire'
+  pod 'RxSwift', '~> 5'
+  pod 'RxCocoa', '~> 5'
 end
