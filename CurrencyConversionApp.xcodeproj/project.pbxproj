@@ -20,6 +20,7 @@
 		6B94987F24F8CC2B00C6A3A9 /* CurrencyConverterDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B94987E24F8CC2B00C6A3A9 /* CurrencyConverterDispatcher.swift */; };
 		6B94988124F8CC3B00C6A3A9 /* CurrencyConverterStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B94988024F8CC3B00C6A3A9 /* CurrencyConverterStore.swift */; };
 		6B94988324F8D1C800C6A3A9 /* DispatchSubject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B94988224F8D1C800C6A3A9 /* DispatchSubject.swift */; };
+		6B94988624F8D65F00C6A3A9 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B94988524F8D65F00C6A3A9 /* Currency.swift */; };
 		8D6D0F81828611C6B79DE8EE /* Pods_CurrencyConversionApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85DF52AD16410AE759D22ED7 /* Pods_CurrencyConversionApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +63,7 @@
 		6B94987E24F8CC2B00C6A3A9 /* CurrencyConverterDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyConverterDispatcher.swift; sourceTree = "<group>"; };
 		6B94988024F8CC3B00C6A3A9 /* CurrencyConverterStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyConverterStore.swift; sourceTree = "<group>"; };
 		6B94988224F8D1C800C6A3A9 /* DispatchSubject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchSubject.swift; sourceTree = "<group>"; };
+		6B94988524F8D65F00C6A3A9 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 		85DF52AD16410AE759D22ED7 /* Pods_CurrencyConversionApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CurrencyConversionApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -127,6 +129,7 @@
 				6B94987924F8CBC500C6A3A9 /* Actions */,
 				6B94987624F8B95600C6A3A9 /* API */,
 				6B94987A24F8CBD400C6A3A9 /* Dispatchers */,
+				6B94988424F8D65200C6A3A9 /* Models */,
 				6B94987B24F8CBDD00C6A3A9 /* Stores */,
 				6B94984624F8088F00C6A3A9 /* AppDelegate.swift */,
 				6B94984824F8088F00C6A3A9 /* SceneDelegate.swift */,
@@ -188,6 +191,14 @@
 				6B94988024F8CC3B00C6A3A9 /* CurrencyConverterStore.swift */,
 			);
 			path = Stores;
+			sourceTree = "<group>";
+		};
+		6B94988424F8D65200C6A3A9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6B94988524F8D65F00C6A3A9 /* Currency.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		94585BF97FFC9352C422A5C0 /* Pods */ = {
@@ -374,6 +385,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B94988624F8D65F00C6A3A9 /* Currency.swift in Sources */,
 				6B94988324F8D1C800C6A3A9 /* DispatchSubject.swift in Sources */,
 				6B94984B24F8088F00C6A3A9 /* ViewController.swift in Sources */,
 				6B94987D24F8CC1800C6A3A9 /* CurrencyConverterAction.swift in Sources */,

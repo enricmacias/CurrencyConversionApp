@@ -5,8 +5,8 @@ final class CurrencyCoverterStore {
     
     static let shared = CurrencyCoverterStore()
     
-    let currencies: Observable<[String: String]>
-    private let _currencies = BehaviorRelay<[String: String]>.init(value: [:])
+    let currencies: Observable<[Currency]>
+    private let _currencies = BehaviorRelay<[Currency]>.init(value: [])
 
     let usdRates: Observable<[String: Float]>
     private let _usdRates = BehaviorRelay<[String: Float]>.init(value: [:])

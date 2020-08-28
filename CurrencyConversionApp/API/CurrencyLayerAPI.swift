@@ -4,14 +4,14 @@ import RxSwift
 public final class CurrencyLayerAPI {
     private let disposeBag = DisposeBag()
 
-    public static func requestCurrenciesList() -> Observable<[String: AnyObject]> {
+    public static func requestCurrenciesList() -> Observable<[String: String]> {
         let parameters = ["access_key": Const.accessKey]
         return RxAlamofire.requestJSON(.get,
                                        Const.currenciesListRequest,
                                        parameters: parameters)
-            .flatMap { _, json -> Observable<[String: AnyObject]> in
+            .flatMap { _, json -> Observable<[String: String]> in
                 guard let dict = json as? [String: AnyObject],
-                    let currencies = dict["currencies"] as? [String: AnyObject] else {
+                    let currencies = dict["currencies"] as? [String: String] else {
                         // TODO: Create an error class, and handle errors more proeprly
                         return .error(NSError(domain:"", code:0, userInfo:nil))
                 }
