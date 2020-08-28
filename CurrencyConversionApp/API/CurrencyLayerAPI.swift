@@ -24,7 +24,6 @@ public final class CurrencyLayerAPI {
         return RxAlamofire.requestJSON(.get,
                                        Const.ratesRequest,
                                        parameters: parameters)
-            .debug()
             .flatMap { _, json -> Observable<[String: AnyObject]> in
                 guard let dict = json as? [String: AnyObject],
                     let currencies = dict["quotes"] as? [String: AnyObject] else {
@@ -40,7 +39,6 @@ public final class CurrencyLayerAPI {
         return RxAlamofire.requestJSON(.get,
                                        Const.ratesRequest,
                                        parameters: parameters)
-            .debug()
             .flatMap { _, json -> Observable<[String: AnyObject]> in
                 guard let dict = json as? [String: AnyObject],
                     let currencies = dict["quotes"] as? [String: AnyObject] else {
