@@ -1,4 +1,4 @@
-import Foundation
+import RxSwift
 
 protocol CurrencyConverterActionType: class {
     func fetchCurrencies()
@@ -11,6 +11,8 @@ final class CurrencyConverterAction: CurrencyConverterActionType {
     
     private let dispatcher: CurrencyConverterDispatcher
     
+    fileprivate let disposeBag = DisposeBag()
+    
     init(dispatcher: CurrencyConverterDispatcher = .shared) {
         self.dispatcher = dispatcher
     }
@@ -22,6 +24,7 @@ final class CurrencyConverterAction: CurrencyConverterActionType {
                 guard let me = self else { return }
                 me.dispatcher.currencies.dispatch(currencies)
             })
+            .disposed(by: disposeBag)
     }
     
     func fetchRates() {
