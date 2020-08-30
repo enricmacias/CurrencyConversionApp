@@ -35,13 +35,11 @@ final class CurrencyConverterTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // TODO : Fetch currencies on app start?
+        // TODO : show loading while fetching
         CurrencyConverterAction.shared.fetchCurrencies()
         CurrencyConverterAction.shared.startFetchingRates()
         
-        // TODO: get store values from stream?
-        CurrencyConverterStore.shared.currencies.asObservable()
-            .map { $0.map { $0.name } }
+        viewStream.currenciesNames
             .bind(to: currencyPicker.rx.itemTitles) { _, item in
                 return "\(item)"
             }
@@ -85,7 +83,7 @@ final class CurrencyConverterTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return CurrencyConverterStore.shared.convertedRates.value.count
+        return viewStream.convertedRates.value.count
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -98,7 +96,7 @@ final class CurrencyConverterTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CurrencyTableViewCell", for: indexPath) as! CurrencyTableViewCell
-        if let item = CurrencyConverterStore.shared.convertedRates.value[safe: indexPath.row] {
+        if let item = viewStream.convertedRates.value[safe: indexPath.row] {
             cell.confiugure(amount: String(item.amount), currency: item.symbol ?? item.code)
         }
 

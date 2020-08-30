@@ -3,6 +3,12 @@ import RxCocoa
 
 final class CurrencyConverterTableViewControllerStream {
 
+    let currenciesNames: Observable<[String]>
+    private let _currenciesNames = BehaviorRelay<[String]>.init(value:[])
+    
+    let convertedRates: Property<[Currency]>
+    private let _convertedRates = BehaviorRelay<[Currency]>.init(value:[])
+    
     let reloadTableView: Observable<Void>
     private let _reloadTableView = BehaviorRelay<Void>.init(value: ())
 
@@ -24,10 +30,21 @@ final class CurrencyConverterTableViewControllerStream {
          currencyConverterAction: CurrencyConverterAction = .shared,
          currencyConverterStore: CurrencyConverterStore = .shared) {
         
+        self.currenciesNames = _currenciesNames.asObservable()
+        self.convertedRates = Property(_convertedRates)
         self.reloadTableView = _reloadTableView.asObservable()
         self.dismissKeyboard = _dismissKeyboard.asObservable()
         self.isCurrencyPickerHidden = _isCurrencyPickerHidden.asObservable()
         self.selectedCurrency = _selectedCurrency.asObservable()
+        
+        currencyConverterStore.currencies.asObservable()
+            .map { $0.map { $0.name } }
+            .bind(to: _currenciesNames)
+            .disposed(by: disposeBag)
+
+        currencyConverterStore.convertedRates.asObservable()
+            .bind(to: _convertedRates)
+            .disposed(by: disposeBag)
         
         currencyConverterStore.convertedRates.changed
             .map { _ in () }
