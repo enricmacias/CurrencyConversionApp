@@ -5,4 +5,5 @@ target 'CurrencyConversionApp' do
   pod 'RxAlamofire'
   pod 'RxSwift', '~> 5'
   pod 'RxCocoa', '~> 5'
+  pod 'Action'
 end
