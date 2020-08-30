@@ -3,14 +3,29 @@ import RxSwift
 
 final class CurrencyConverterTableViewController: UITableViewController {
 
-    lazy var conversorHeaderView: CurrencyConverterHeaderView? = {
+    let conversorHeaderView: CurrencyConverterHeaderView? = {
         let view = Bundle.main.loadNibNamed("CurrencyConverterHeaderView", owner: self, options: nil)?[0] as? CurrencyConverterHeaderView
-        view?.amountTextField.delegate = self
         return view
+    }()
+
+    lazy var currencyPicker: UIPickerView = {
+        let picker = UIPickerView()
+        let frame = CGRect(x: 0.0,
+                           y: view.frame.size.height - picker.frame.size.height,
+                           width: view.frame.width,
+                           height: picker.frame.size.height)
+        picker.frame = frame
+        view.addSubview(picker)
+        return picker
     }()
     
     private lazy var viewStream: CurrencyConverterTableViewControllerStream = {
-        return CurrencyConverterTableViewControllerStream()
+        let currencyButtonTriggered = conversorHeaderView?.currencyButton.rx.tap.map { _ in () } ?? .empty()
+        let selectedRowInCurrencyPicker = currencyPicker.rx.itemSelected.map { $0.row }
+        let amountTextFieldText = conversorHeaderView?.amountTextField.rx.text.asObservable() ?? .empty()
+        return CurrencyConverterTableViewControllerStream(currencyButtonTriggered: currencyButtonTriggered,
+                                                          selectedRowInCurrencyPicker: selectedRowInCurrencyPicker,
+                                                          amountTextFieldText: amountTextFieldText)
     }()
     
     fileprivate let disposeBag = DisposeBag()
@@ -21,12 +36,27 @@ final class CurrencyConverterTableViewController: UITableViewController {
         CurrencyConverterAction.shared.fetchCurrencies()
         CurrencyConverterAction.shared.fetchRates()
         
+        CurrencyConverterStore.shared.currencies.asObservable()
+            .map { $0.map { $0.name } }
+            .bind(to: currencyPicker.rx.itemTitles) { _, item in
+                return "\(item)"
+            }
+            .disposed(by: disposeBag)
+        
         viewStream.reloadTableView
             .observeOn(ConcurrentMainScheduler.instance)
             .subscribe { [weak self] _ in
                 guard let me = self else { return }
                 me.tableView.reloadData()
             }
+            .disposed(by: disposeBag)
+
+        viewStream.isCurrencyPickerHidden
+            .bind(to: currencyPicker.rx.isHidden)
+            .disposed(by: disposeBag)
+
+        viewStream.selectedCurrency
+            .bind(to: conversorHeaderView!.currencyButton.rx.title(for: .normal))
             .disposed(by: disposeBag)
     }
 
@@ -57,16 +87,4 @@ final class CurrencyConverterTableViewController: UITableViewController {
         return cell
     }
 
-}
-
-extension CurrencyConverterTableViewController: UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if let text = textField.text,
-           let textRange = Range(range, in: text) {
-           let updatedText = text.replacingCharacters(in: textRange,
-                                                       with: string)
-           CurrencyConverterAction.shared.convert(Double(updatedText) ?? 0, from: "USD")
-        }
-        return true
-    }
 }

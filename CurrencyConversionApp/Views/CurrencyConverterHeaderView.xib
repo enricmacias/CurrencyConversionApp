@@ -25,7 +25,6 @@
                         <constraint firstAttribute="height" constant="60" id="zen-Xr-Ivh"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                    <state key="normal" title="USD"/>
                 </button>
             </subviews>
             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
