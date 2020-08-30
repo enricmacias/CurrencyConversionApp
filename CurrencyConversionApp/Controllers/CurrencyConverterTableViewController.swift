@@ -16,15 +16,16 @@ final class CurrencyConverterTableViewController: UITableViewController {
                            width: view.frame.width,
                            height: picker.frame.size.height)
         picker.frame = frame
-        view.addSubview(picker)
         return picker
     }()
     
     private lazy var viewStream: CurrencyConverterTableViewControllerStream = {
         let currencyButtonTriggered = conversorHeaderView?.currencyButton.rx.tap.map { _ in () } ?? .empty()
+        let doneButtonTriggered = conversorHeaderView?.doneButton.rx.tap.map { _ in () } ?? .empty()
         let selectedRowInCurrencyPicker = currencyPicker.rx.itemSelected.map { $0.row }
         let amountTextFieldText = conversorHeaderView?.amountTextField.rx.text.asObservable() ?? .empty()
         return CurrencyConverterTableViewControllerStream(currencyButtonTriggered: currencyButtonTriggered,
+                                                          doneButtonTriggered: doneButtonTriggered,
                                                           selectedRowInCurrencyPicker: selectedRowInCurrencyPicker,
                                                           amountTextFieldText: amountTextFieldText)
     }()
@@ -55,17 +56,27 @@ final class CurrencyConverterTableViewController: UITableViewController {
             }
             .disposed(by: disposeBag)
 
-        // TODO: Show and hide as a keyboard
+        viewStream.dismissKeyboard
+            .observeOn(ConcurrentMainScheduler.instance)
+            .subscribe { [weak self] _ in
+                guard let me = self else { return }
+                me.view.endEditing(true)
+            }
+            .disposed(by: disposeBag)
+
         viewStream.isCurrencyPickerHidden
-            .bind(to: currencyPicker.rx.isHidden)
+            .observeOn(ConcurrentMainScheduler.instance)
+            .subscribe(onNext: { [weak self] isHidden in
+                guard let me = self else { return }
+                me.conversorHeaderView?.amountTextField.inputView = isHidden ? nil : me.currencyPicker
+                me.conversorHeaderView?.amountTextField.reloadInputViews()
+            })
             .disposed(by: disposeBag)
 
         // TODO: Show symbol instead of currency code
         viewStream.selectedCurrency
             .bind(to: conversorHeaderView!.currencyButton.rx.title(for: .normal))
             .disposed(by: disposeBag)
-        
-        // TODO: Hide and show keyboard
     }
 
     // MARK: - Table view data source

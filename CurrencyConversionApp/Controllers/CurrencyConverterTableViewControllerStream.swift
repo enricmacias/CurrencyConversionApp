@@ -5,6 +5,9 @@ final class CurrencyConverterTableViewControllerStream {
 
     let reloadTableView: Observable<Void>
     private let _reloadTableView = BehaviorRelay<Void>.init(value: ())
+
+    let dismissKeyboard: Observable<Void>
+    private let _dismissKeyboard = BehaviorRelay<Void>.init(value: ())
     
     let isCurrencyPickerHidden: Observable<Bool>
     private let _isCurrencyPickerHidden = BehaviorRelay<Bool>.init(value: true)
@@ -15,12 +18,14 @@ final class CurrencyConverterTableViewControllerStream {
     fileprivate let disposeBag = DisposeBag()
     
     init(currencyButtonTriggered: Observable<Void>,
+         doneButtonTriggered: Observable<Void>,
          selectedRowInCurrencyPicker: Observable<Int>,
          amountTextFieldText: Observable<String?>,
          currencyConverterAction: CurrencyConverterAction = .shared,
          currencyConverterStore: CurrencyConverterStore = .shared) {
         
         self.reloadTableView = _reloadTableView.asObservable()
+        self.dismissKeyboard = _dismissKeyboard.asObservable()
         self.isCurrencyPickerHidden = _isCurrencyPickerHidden.asObservable()
         self.selectedCurrency = _selectedCurrency.asObservable()
         
@@ -29,9 +34,13 @@ final class CurrencyConverterTableViewControllerStream {
             .bind(to: _reloadTableView)
             .disposed(by: disposeBag)
 
-        currencyButtonTriggered
-            .map { _ in false }
+        Observable.merge(currencyButtonTriggered.map { _ in false },
+                         doneButtonTriggered.map { _ in true })
             .bind(to: _isCurrencyPickerHidden)
+            .disposed(by: disposeBag)
+
+        doneButtonTriggered
+            .bind(to: _dismissKeyboard)
             .disposed(by: disposeBag)
 
         selectedRowInCurrencyPicker
