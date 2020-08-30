@@ -50,8 +50,9 @@ final class CurrencyConverterTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CurrencyTableViewCell", for: indexPath) as! CurrencyTableViewCell
-        let item = CurrencyConverterStore.shared.convertedRates.value[indexPath.row]
-        cell.confiugure(amount: String(item.amount), currency: item.symbol ?? item.code)
+        if let item = CurrencyConverterStore.shared.convertedRates.value[safe: indexPath.row] {
+            cell.confiugure(amount: String(item.amount), currency: item.symbol ?? item.code)
+        }
 
         return cell
     }
