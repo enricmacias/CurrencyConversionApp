@@ -37,8 +37,7 @@ final class CurrencyConverterTableViewController: UITableViewController {
         
         // TODO : Fetch currencies on app start?
         CurrencyConverterAction.shared.fetchCurrencies()
-        // TODO : Fetch rates every 30 min and save it in user defaults
-        CurrencyConverterAction.shared.fetchRates()
+        CurrencyConverterAction.shared.startFetchingRates()
         
         // TODO: get store values from stream?
         CurrencyConverterStore.shared.currencies.asObservable()

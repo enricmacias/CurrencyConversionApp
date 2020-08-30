@@ -2,7 +2,7 @@ import RxSwift
 
 protocol CurrencyConverterActionType: class {
     func fetchCurrencies()
-    func fetchRates()
+    func startFetchingRates()
     func convert(_ amount: Double, from currency: String)
 }
 
@@ -30,7 +30,20 @@ final class CurrencyConverterAction: CurrencyConverterActionType {
             .disposed(by: disposeBag)
     }
     
-    func fetchRates() {
+    func startFetchingRates() {
+        fetchRates()
+        // I assume that while the app is on the background rates don't need to be updated.
+        // The timer will fire once if the app becomes active and the time has elapsed during background mode.
+        Observable<Int>.interval(.seconds(1800), scheduler: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] timer in
+                guard let me = self else { return }
+                print(timer)
+                //me.fetchRates()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    fileprivate func fetchRates() {
         CurrencyLayerAPI.requestRates()
             .map { dic in
                 Dictionary<String, Double>(uniqueKeysWithValues: dic.map { item in
