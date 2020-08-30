@@ -32,7 +32,12 @@ final class CurrencyConverterAction: CurrencyConverterActionType {
     
     func fetchRates() {
         CurrencyLayerAPI.requestRates()
-            .map { Dictionary(uniqueKeysWithValues: $0.map { ($0.key.replacingOccurrences(of: "USD", with: ""), $0.value) }) }
+            .map { dic in
+                Dictionary<String, Double>(uniqueKeysWithValues: dic.map { item in
+                    let key = item.key.replacingOccurrences(of: "USD", with: "")
+                    return (key.isEmpty ? "USD" : key, item.value)
+                })
+            }
             .subscribe(onNext: { [weak self] rates in
                 guard let me = self else { return }
                 me.dispatcher.usdRates.dispatch(rates)
@@ -41,15 +46,15 @@ final class CurrencyConverterAction: CurrencyConverterActionType {
     }
     
     func convert(_ amount: Double, from currency: String) {
-        store.usdRates
-            .map { usdRates -> [String:Double] in
-                guard let currencyRate = usdRates[currency] else { return [:] }
+        store.usdRates.asObservable()
+            .map { usdRates -> [Currency] in
+                guard let currencyRate = usdRates[currency] else { return [] }
                 let amountInUSD = currency == "USD" ? amount : amount/currencyRate
-                return Dictionary(uniqueKeysWithValues: usdRates.map { ($0.key, $0.value * amountInUSD) })
+                return usdRates.map { Currency(code: $0.key, amount: $0.value * amountInUSD) }
             }
             .subscribe(onNext: { [weak self] rates in
                 guard let me = self else { return }
-                me.dispatcher.covertedRates.dispatch(rates)
+                me.dispatcher.convertedRates.dispatch(rates)
             })
             .disposed(by: disposeBag)
     }

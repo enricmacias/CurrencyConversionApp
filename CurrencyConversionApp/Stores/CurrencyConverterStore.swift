@@ -5,21 +5,21 @@ final class CurrencyConverterStore {
     
     static let shared = CurrencyConverterStore()
     
-    let currencies: Observable<[Currency]>
+    let currencies: Property<[Currency]>
     private let _currencies = BehaviorRelay<[Currency]>.init(value: [])
 
-    let usdRates: Observable<[String: Double]>
+    let usdRates: Property<[String: Double]>
     private let _usdRates = BehaviorRelay<[String: Double]>.init(value: [:])
 
-    let covertedRates: Observable<[String: Double]>
-    private let _convertedRates = BehaviorRelay<[String: Double]>.init(value: [:])
+    let convertedRates: Property<[Currency]>
+    private let _convertedRates = BehaviorRelay<[Currency]>.init(value: [])
     
     let disposeBag = DisposeBag()
     
     init(dispatcher: CurrencyConverterDispatcher = .shared) {
-        self.currencies = _currencies.asObservable()
-        self.usdRates = _usdRates.asObservable()
-        self.covertedRates = _convertedRates.asObservable()
+        self.currencies = Property(_currencies)
+        self.usdRates = Property(_usdRates)
+        self.convertedRates = Property(_convertedRates)
         
         dispatcher.currencies
             .bind(to: _currencies)
@@ -29,7 +29,7 @@ final class CurrencyConverterStore {
             .bind(to: _usdRates)
             .disposed(by: disposeBag)
 
-        dispatcher.covertedRates
+        dispatcher.convertedRates
             .bind(to: _convertedRates)
             .disposed(by: disposeBag)
     }
