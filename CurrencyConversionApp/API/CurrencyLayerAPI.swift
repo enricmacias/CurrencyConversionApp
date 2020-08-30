@@ -12,7 +12,7 @@ public final class CurrencyLayerAPI {
             .flatMap { _, json -> Observable<[String: String]> in
                 guard let dict = json as? [String: AnyObject],
                     let currencies = dict["currencies"] as? [String: String] else {
-                        // TODO: Create an error class, and handle errors more proeprly
+                        // TODO: Create an error class, and handle errors more properly
                         return .error(NSError(domain:"", code:0, userInfo:nil))
                 }
                 return .just(currencies)
@@ -27,25 +27,10 @@ public final class CurrencyLayerAPI {
             .flatMap { _, json -> Observable<[String: Double]> in
                 guard let dict = json as? [String: AnyObject],
                     let rates = dict["quotes"] as? [String: Double] else {
-                        // TODO: Create an error class, and handle errors more proeprly
+                        // TODO: Create an error class, and handle errors more properly
                         return .error(NSError(domain:"", code:0, userInfo:nil))
                 }
                 return .just(rates)
-            }
-    }
-    
-    public static func requestConversion() -> Observable<[String: AnyObject]> {
-        let parameters = ["access_key": Const.accessKey]
-        return RxAlamofire.requestJSON(.get,
-                                       Const.ratesRequest,
-                                       parameters: parameters)
-            .flatMap { _, json -> Observable<[String: AnyObject]> in
-                guard let dict = json as? [String: AnyObject],
-                    let currencies = dict["quotes"] as? [String: AnyObject] else {
-                        // TODO: Create an error class, and handle errors more proeprly
-                        return .error(NSError(domain:"", code:0, userInfo:nil))
-                }
-                return .just(currencies)
             }
     }
 }

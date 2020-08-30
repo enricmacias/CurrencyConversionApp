@@ -8,6 +8,7 @@ final class CurrencyConverterTableViewController: UITableViewController {
         return view
     }()
 
+    // TODO: Select USD as default
     lazy var currencyPicker: UIPickerView = {
         let picker = UIPickerView()
         let frame = CGRect(x: 0.0,
@@ -33,9 +34,12 @@ final class CurrencyConverterTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // TODO : Fetch currencies on app start?
         CurrencyConverterAction.shared.fetchCurrencies()
+        // TODO : Fetch rates every 30 min and save it in user defaults
         CurrencyConverterAction.shared.fetchRates()
         
+        // TODO: get store values from stream?
         CurrencyConverterStore.shared.currencies.asObservable()
             .map { $0.map { $0.name } }
             .bind(to: currencyPicker.rx.itemTitles) { _, item in
@@ -51,10 +55,12 @@ final class CurrencyConverterTableViewController: UITableViewController {
             }
             .disposed(by: disposeBag)
 
+        // TODO: Show and hide as a keyboard
         viewStream.isCurrencyPickerHidden
             .bind(to: currencyPicker.rx.isHidden)
             .disposed(by: disposeBag)
 
+        // TODO: Show symbol instead of currency code
         viewStream.selectedCurrency
             .bind(to: conversorHeaderView!.currencyButton.rx.title(for: .normal))
             .disposed(by: disposeBag)
