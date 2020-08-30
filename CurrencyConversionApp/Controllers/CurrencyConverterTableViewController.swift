@@ -64,6 +64,8 @@ final class CurrencyConverterTableViewController: UITableViewController {
         viewStream.selectedCurrency
             .bind(to: conversorHeaderView!.currencyButton.rx.title(for: .normal))
             .disposed(by: disposeBag)
+        
+        // TODO: Hide and show keyboard
     }
 
     // MARK: - Table view data source
