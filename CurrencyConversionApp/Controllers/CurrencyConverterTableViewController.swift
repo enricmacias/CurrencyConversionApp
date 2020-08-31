@@ -72,13 +72,15 @@ final class CurrencyConverterTableViewController: UITableViewController {
             }
             .disposed(by: disposeBag)
 
-        // TODO: Show by only clicking in the button when the keyboard is hidden
         viewStream.isCurrencyPickerHidden
             .observeOn(ConcurrentMainScheduler.instance)
             .subscribe(onNext: { [weak self] isHidden in
                 guard let me = self else { return }
                 me.conversorHeaderView?.amountTextField.inputView = isHidden ? nil : me.currencyPicker
                 me.conversorHeaderView?.amountTextField.reloadInputViews()
+                if !isHidden {
+                    me.conversorHeaderView?.amountTextField.becomeFirstResponder()
+                }
             })
             .disposed(by: disposeBag)
 
