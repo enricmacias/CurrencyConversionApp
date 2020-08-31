@@ -7,5 +7,9 @@ target 'CurrencyConversionApp' do
   pod 'RxCocoa', '~> 5'
   pod 'Action'
   pod 'RxBlocking', '~> 5'
-  pod 'RxTest', '~> 5'
+end
+
+target 'CurrencyConversionAppTests' do
+    pod 'RxBlocking', '~> 5'
+    pod 'RxTest', '~> 5'
 end
