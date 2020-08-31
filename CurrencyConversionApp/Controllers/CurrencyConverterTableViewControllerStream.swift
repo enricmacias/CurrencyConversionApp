@@ -57,7 +57,8 @@ final class CurrencyConverterTableViewControllerStream {
     init(currencyButtonTriggered: Observable<Void>,
          doneButtonTriggered: Observable<Void>,
          selectedRowInCurrencyPicker: Observable<Int>,
-         amountTextFieldText: Observable<String?>) {
+         amountTextFieldText: Observable<String?>,
+         scheduler: SchedulerType = ConcurrentMainScheduler.instance) {
         
         self.currenciesNames = _currenciesNames.asObservable()
         self.convertedRates = Property(_convertedRates)
@@ -97,10 +98,12 @@ final class CurrencyConverterTableViewControllerStream {
             .disposed(by: disposeBag)
         
         self.fetchCurrencies.elements
+            //.throttle(.seconds(1), latest: false, scheduler: scheduler)
             .bind(to: _currencies)
             .disposed(by: disposeBag)
         
         self.fetchRates.elements
+            //.throttle(.seconds(1), latest: false, scheduler: scheduler)
             .bind(to: _usdRates)
             .disposed(by: disposeBag)
         
