@@ -33,6 +33,7 @@ final class CurrencyConverterTableViewControllerStream {
     let selectedCurrency: Observable<String>
     private let _selectedCurrency = BehaviorRelay<String>.init(value: "USD")
     
+    /// Variable that fires when an error occurs on the API side
     let showError: Observable<Void?>
     private let _showError = BehaviorRelay<Void?>.init(value: nil)
     
