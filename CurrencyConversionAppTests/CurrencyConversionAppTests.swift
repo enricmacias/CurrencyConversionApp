@@ -14,6 +14,12 @@ final class CurrencyConversionAppTests: XCTestCase {
         dependency = Dependency()
     }
     
+    // TODO: currenciesNames test
+    
+    // TODO: convertedRates test
+    
+    // TODO: reloadTableView test
+    
     func test_dismissKeyboard() {
         let eventStack = WatchStack(dependency.testTarget.dismissKeyboard)
         XCTAssertEqual(eventStack.count, 1, "on init")
@@ -53,6 +59,8 @@ final class CurrencyConversionAppTests: XCTestCase {
         dependency.selectedRowInCurrencyPicker.accept(1)
         XCTAssertEqual(eventStack.count, 2, "on element selected in picker")
     }*/
+    
+    // TODO: showError test
 
 }
 
