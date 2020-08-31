@@ -19,6 +19,15 @@ final class CurrencyConverterTableViewController: UITableViewController {
         return picker
     }()
     
+    lazy var loading: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(frame: CGRect(x: 0.0, y: 0.0, width: 40.0, height: 40.0))
+        indicator.style = .large
+        indicator.center = self.tableView.center
+        indicator.startAnimating()
+        self.view.addSubview(indicator)
+        return indicator
+    }()
+    
     private lazy var viewStream: CurrencyConverterTableViewControllerStream = {
         let currencyButtonTriggered = conversorHeaderView?.currencyButton.rx.tap.map { _ in () } ?? .empty()
         let doneButtonTriggered = conversorHeaderView?.doneButton.rx.tap.map { _ in () } ?? .empty()
@@ -35,9 +44,8 @@ final class CurrencyConverterTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // TODO : show loading while fetching
-        CurrencyConverterAction.shared.fetchCurrencies()
-        CurrencyConverterAction.shared.startFetchingRates()
+        viewStream.fetchCurrencies.execute()
+        viewStream.fetchRates.execute()
         
         viewStream.currenciesNames
             .bind(to: currencyPicker.rx.itemTitles) { _, item in
@@ -68,6 +76,10 @@ final class CurrencyConverterTableViewController: UITableViewController {
                 me.conversorHeaderView?.amountTextField.inputView = isHidden ? nil : me.currencyPicker
                 me.conversorHeaderView?.amountTextField.reloadInputViews()
             })
+            .disposed(by: disposeBag)
+
+        viewStream.isLoadingHidden
+            .bind(to: loading.rx.isHidden)
             .disposed(by: disposeBag)
 
         // TODO: Show symbol instead of currency code
