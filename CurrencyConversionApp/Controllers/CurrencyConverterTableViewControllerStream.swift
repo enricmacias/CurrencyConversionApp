@@ -99,6 +99,11 @@ final class CurrencyConverterTableViewControllerStream {
         
         self.fetchCurrencies.elements
             //.throttle(.seconds(1), latest: false, scheduler: scheduler)
+            .map { currencies -> [Currency] in
+                // Brings USD to the first position
+                guard let usd = currencies.first(where:{ $0.code == "USD" }) else { return [] }
+                return Array(arrayLiteral: usd) + currencies.filter { $0.code != "USD" }
+            }
             .bind(to: _currencies)
             .disposed(by: disposeBag)
         
@@ -121,11 +126,6 @@ final class CurrencyConverterTableViewControllerStream {
             .disposed(by: disposeBag)
         
         _currencies
-            .map { currencies -> [Currency] in
-                // Brings USD to the first position
-                guard let usd = currencies.first(where:{ $0.code == "USD" }) else { return [] }
-                return Array(arrayLiteral: usd) + currencies.filter { $0.code != "USD" }
-            }
             .map { $0.map { $0.name } }
             .bind(to: _currenciesNames)
             .disposed(by: disposeBag)
