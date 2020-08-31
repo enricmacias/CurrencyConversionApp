@@ -10,7 +10,6 @@ final class CurrencyConverterTableViewController: UITableViewController {
         return view
     }()
 
-    // TODO: Select USD as default
     lazy var currencyPicker: UIPickerView = {
         let picker = UIPickerView()
         let frame = CGRect(x: 0.0,
