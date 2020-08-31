@@ -14,11 +14,54 @@ final class CurrencyConversionAppTests: XCTestCase {
         dependency = Dependency()
     }
     
-    // TODO: currenciesNames test
+    func test_currenciesNames() {
+        let eventStack = WatchStack(dependency.testTarget.currenciesNames)
+        XCTAssertEqual(eventStack.value, [], "on init")
+        XCTAssertEqual(eventStack.count, 1, "on init")
+        
+        /*dependency.testTarget.fetchCurrencies = Action<Void, [Currency]> { _ in
+            return .just([Currency(name: "currency", code: "code")])
+        }
+        dependency.testTarget.fetchCurrencies.execute()
+        dependency.testScheduler.wait(1)
+        XCTAssertEqual(eventStack.count, 2, "after currencies fetched")*/
+    }
     
-    // TODO: convertedRates test
+    func test_convertedRates() {
+        let eventStack = WatchStack(dependency.testTarget.convertedRates.asObservable())
+        XCTAssertEqual(eventStack.count, 1, "on init")
+        
+        /*dependency.testTarget.fetchCurrencies = Action<Void, [Currency]> { _ in
+            return .just([Currency(name: "currency", code: "USD")])
+        }
+        dependency.testTarget.fetchRates = Action<Void, [String: Double]> { _ in
+            return .just(["USD":1.0])
+        }
+        dependency.testScheduler.wait(1)*/
+        dependency.amountTextFieldText.accept("5")
+        XCTAssertEqual(eventStack.count, 2, "on inserted amount in textfield")
+        
+        /*dependency.selectedRowInCurrencyPicker.accept(1)
+        XCTAssertEqual(eventStack.count, 3, "on selected currency")*/
+    }
     
-    // TODO: reloadTableView test
+    func test_reloadTableView() {
+        let eventStack = WatchStack(dependency.testTarget.reloadTableView.asObservable())
+        XCTAssertEqual(eventStack.count, 1, "on init")
+        
+        /*dependency.testTarget.fetchCurrencies = Action<Void, [Currency]> { _ in
+            return .just([Currency(name: "currency", code: "USD")])
+        }
+        dependency.testTarget.fetchRates = Action<Void, [String: Double]> { _ in
+            return .just(["USD":1.0])
+        }
+        dependency.testScheduler.wait(1)*/
+        dependency.amountTextFieldText.accept("5")
+        XCTAssertEqual(eventStack.count, 2, "on inserted amount in textfield")
+        
+        /*dependency.selectedRowInCurrencyPicker.accept(1)
+        XCTAssertEqual(eventStack.count, 3, "on selected currency")*/
+    }
     
     func test_dismissKeyboard() {
         let eventStack = WatchStack(dependency.testTarget.dismissKeyboard)
@@ -39,28 +82,39 @@ final class CurrencyConversionAppTests: XCTestCase {
         XCTAssertEqual(eventStack.value, true, "on done button triggered")
     }
     
-    /*func test_isLoadingHidden() {
+    func test_isLoadingHidden() {
         let eventStack = WatchStack(dependency.testTarget.isLoadingHidden)
         XCTAssertEqual(eventStack.count, 1, "on init")
         
-        let fetchCurrencies = Action<Void, [Currency]> { _ in
-            return .just([Currency(name: "currency", code: "currency_id")])
-        }
-        //dependency.testTarget.fetchCurrencies.execute()
+        dependency.testTarget.fetchCurrencies.execute()
+        XCTAssertEqual(eventStack.count, 2, "on fetching currencies")
         
-        XCTAssertEqual(eventStack.count, 2, "on fetching")
-    }*/
+        dependency.testTarget.fetchRates.execute()
+        XCTAssertEqual(eventStack.count, 3, "on fetching rates")
+    }
     
-    /*func test_selectedCurrency() {
+    func test_selectedCurrency() {
         let eventStack = WatchStack(dependency.testTarget.selectedCurrency)
-        XCTAssertEqual(eventStack.count, "USD", "on init")
+        XCTAssertEqual(eventStack.value, "USD", "on init")
         
-        // TODO: set mock currencies
+        /*dependency.testTarget.fetchCurrencies = Action<Void, [Currency]> { _ in
+            return .just([Currency(name: "currency1", code: "USD"),
+                          Currency(name: "currency2", code: "JPY")])
+        }
+        dependency.testScheduler.wait(1)
         dependency.selectedRowInCurrencyPicker.accept(1)
-        XCTAssertEqual(eventStack.count, 2, "on element selected in picker")
-    }*/
+        XCTAssertEqual(eventStack.value, "JPY", "on element selected in picker")*/
+    }
     
-    // TODO: showError test
+    func test_showError() {
+        let eventStack = WatchStack(dependency.testTarget.showError)
+        XCTAssertNil(eventStack.value ?? nil, "on init")
+        
+        dependency.testTarget.fetchCurrencies = Action<Void, [Currency]> { _ in
+            return .error(NSError(domain: "", code: 404, userInfo: nil))
+        }
+        XCTAssertEqual(eventStack.count, 1, "on element selected in picker")
+    }
 
 }
 
@@ -73,6 +127,7 @@ extension CurrencyConversionAppTests {
         let doneButtonTriggered = PublishRelay<Void>()
         let selectedRowInCurrencyPicker = PublishRelay<Int>()
         let amountTextFieldText = PublishRelay<String?>()
+        let testScheduler: TestScheduler
         
         let testTarget: CurrencyConverterTableViewControllerStream
         
@@ -81,6 +136,7 @@ extension CurrencyConversionAppTests {
                                                                     doneButtonTriggered: doneButtonTriggered.asObservable(),
                                                                     selectedRowInCurrencyPicker: selectedRowInCurrencyPicker.asObservable(),
                                                                     amountTextFieldText: amountTextFieldText.asObservable())
+            testScheduler = TestScheduler(initialClock: 0)
         }
     }
 }

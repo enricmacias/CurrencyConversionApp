@@ -47,9 +47,9 @@ final class CurrencyConverterTableViewControllerStream {
     private let _usdRates = BehaviorRelay<[String: Double]>.init(value: [:])
     
     // Extra
-    let fetchCurrencies: Action<Void, [Currency]>
+    var fetchCurrencies: Action<Void, [Currency]>
     
-    let fetchRates: Action<Void, [String: Double]>
+    var fetchRates: Action<Void, [String: Double]>
     
     fileprivate let disposeBag = DisposeBag()
     
@@ -111,7 +111,7 @@ final class CurrencyConverterTableViewControllerStream {
 
         // MARK - Outputs
         Observable.merge(self.fetchCurrencies.executing,
-                         self.fetchRates.executing)
+            self.fetchRates.executing)
             .map{ !$0 }
             .bind(to: _isLoadingHidden)
             .disposed(by: disposeBag)
