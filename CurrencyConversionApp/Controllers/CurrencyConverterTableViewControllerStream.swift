@@ -33,6 +33,9 @@ final class CurrencyConverterTableViewControllerStream {
     let selectedCurrency: Observable<String>
     private let _selectedCurrency = BehaviorRelay<String>.init(value: "USD")
     
+    let showError: Observable<Void?>
+    private let _showError = BehaviorRelay<Void?>.init(value: nil)
+    
     // State
     /// Variable containing all existent currencies to make a conversion
     let currencies: Observable<[Currency]>
@@ -62,6 +65,7 @@ final class CurrencyConverterTableViewControllerStream {
         self.isCurrencyPickerHidden = _isCurrencyPickerHidden.asObservable()
         self.isLoadingHidden = _isLoadingHidden.asObservable()
         self.selectedCurrency = _selectedCurrency.asObservable()
+        self.showError = _showError.asObservable()
         
         self.usdRates = _usdRates.asObservable()
         self.currencies = _currencies.asObservable()
@@ -101,9 +105,8 @@ final class CurrencyConverterTableViewControllerStream {
         
         Observable.merge(self.fetchCurrencies.errors,
                          self.fetchRates.errors)
-            .subscribe(onNext: { error in
-                print("error")
-            })
+            .map { _ in () }
+            .bind(to: _showError)
             .disposed(by: disposeBag)
 
         // MARK - Outputs

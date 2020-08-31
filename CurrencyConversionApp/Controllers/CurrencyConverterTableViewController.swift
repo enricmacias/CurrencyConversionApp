@@ -81,6 +81,21 @@ final class CurrencyConverterTableViewController: UITableViewController {
         viewStream.isLoadingHidden
             .bind(to: loading.rx.isHidden)
             .disposed(by: disposeBag)
+        
+        viewStream.showError
+            .filterNil()
+            .observeOn(ConcurrentMainScheduler.instance)
+            .subscribe(onNext: { [weak self] _ in
+                guard let me = self else { return }
+                let alert = UIAlertController(title: "Error",
+                                              message: "Something went wrong! Please try again later!",
+                                              preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK",
+                                              style: .default,
+                                              handler: nil))
+                me.present(alert, animated: true)
+            })
+            .disposed(by: disposeBag)
 
         // TODO: Show symbol instead of currency code
         viewStream.selectedCurrency
