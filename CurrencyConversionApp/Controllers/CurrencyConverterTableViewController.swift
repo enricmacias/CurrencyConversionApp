@@ -3,6 +3,8 @@ import RxSwift
 
 final class CurrencyConverterTableViewController: UITableViewController {
 
+    // TODO: Make status bar opaque
+    
     let conversorHeaderView: CurrencyConverterHeaderView? = {
         let view = Bundle.main.loadNibNamed("CurrencyConverterHeaderView", owner: self, options: nil)?[0] as? CurrencyConverterHeaderView
         return view
@@ -44,6 +46,7 @@ final class CurrencyConverterTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationController?.navigationBar.isHidden = true
         viewStream.fetchCurrencies.execute()
         viewStream.fetchRates.execute()
         
