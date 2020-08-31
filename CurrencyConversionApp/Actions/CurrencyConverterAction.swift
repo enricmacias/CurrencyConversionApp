@@ -38,7 +38,7 @@ final class CurrencyConverterAction: CurrencyConverterActionType {
             .subscribe(onNext: { [weak self] timer in
                 guard let me = self else { return }
                 print(timer)
-                //me.fetchRates()
+                me.fetchRates()
             })
             .disposed(by: disposeBag)
     }
