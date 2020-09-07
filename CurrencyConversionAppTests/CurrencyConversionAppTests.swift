@@ -99,7 +99,7 @@ final class CurrencyConversionAppTests: XCTestCase {
     
     func test_selectedCurrency() {
         let eventStack = WatchStack(dependency.testTarget.selectedCurrency)
-        XCTAssertEqual(eventStack.value, "USD", "on init")
+        XCTAssertEqual(eventStack.value?.code, "USD", "on init")
         
         /*dependency.testTarget.fetchCurrencies = Action<Void, [Currency]> { _ in
             return .just([Currency(name: "currency1", code: "USD"),
