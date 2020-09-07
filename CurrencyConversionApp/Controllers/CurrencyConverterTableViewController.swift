@@ -102,8 +102,8 @@ final class CurrencyConverterTableViewController: UITableViewController {
             })
             .disposed(by: disposeBag)
 
-        // TODO: Show symbol instead of currency code
         viewStream.selectedCurrency
+            .map { $0.symbol }
             .bind(to: conversorHeaderView!.currencyButton.rx.title(for: .normal))
             .disposed(by: disposeBag)
     }

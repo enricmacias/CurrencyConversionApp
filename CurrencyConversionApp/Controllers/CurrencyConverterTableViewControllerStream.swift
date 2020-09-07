@@ -30,8 +30,8 @@ final class CurrencyConverterTableViewControllerStream {
     private let _isLoadingHidden = BehaviorRelay<Bool>.init(value: false)
 
     /// Variable containing the current selected currency
-    let selectedCurrency: Observable<String>
-    private let _selectedCurrency = BehaviorRelay<String>.init(value: "USD")
+    let selectedCurrency: Observable<Currency>
+    private let _selectedCurrency = BehaviorRelay<Currency>.init(value: Currency(name: "", code: "USD"))
     
     /// Variable that fires when an error occurs on the API side
     let showError: Observable<Void?>
@@ -146,17 +146,17 @@ final class CurrencyConverterTableViewControllerStream {
 
         selectedRowInCurrencyPicker
             .withLatestFrom(_currencies.asObservable()) { ($0, $1) }
-            .map { $1[safe: $0]?.code }
+            .map { $1[safe: $0] }
             .filterNil()
             .bind(to: _selectedCurrency)
             .disposed(by: disposeBag)
 
         Observable.combineLatest(amountTextFieldText.filterNil().map { Double($0) ?? 0 },
-                                 _selectedCurrency)
+                                 _selectedCurrency.map { $0.code })
             .withLatestFrom(_usdRates) { ($0.0, $0.1, $1) }
-            .map { amount, currency, usdRates in
-                guard let currencyRate = usdRates[currency] else { return [] }
-                let amountInUSD = currency == "USD" ? amount : amount/currencyRate
+            .map { amount, selectedCurrencyCode, usdRates in
+                guard let currencyRate = usdRates[selectedCurrencyCode] else { return [] }
+                let amountInUSD = selectedCurrencyCode == "USD" ? amount : amount/currencyRate
                 return usdRates.map { Currency(code: $0.key, amount: $0.value * amountInUSD) }
             }
             .bind(to: _convertedRates)
